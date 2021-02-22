@@ -20,7 +20,7 @@ package io.approov.shapes
 import android.app.Application
 
 // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
-//import io.approov.framework.okhttp.ApproovService
+//import io.approov.service.okhttp.ApproovService
 
 // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
 class ShapesApp : Application() {
