@@ -6,7 +6,7 @@ This quickstart is written specifically for native Android apps that are written
 * Access to a trial or paid Approov account
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
 * [Android Studio](https://developer.android.com/studio) installed (version 4.1.2 is used in this guide)
-* The contents of the folder containing this README
+* The contents of this repo
 
 ## RUNNING THE SHAPES APP WITHOUT APPROOV
 
@@ -46,19 +46,13 @@ maven { url 'https://jitpack.io' }
 
 The `approov-service-okhttp` dependency needs to be added as follows to the `app/build.gradle:40` at the app level:
 
-```
-implementation 'com.github.approov:approov-service-okhttp:main-SNAPSHOT'
-```
-
 ![App Build Gradle](readme-images/app-gradle.png)
 
-Note that in this case the dependency has been added with the tag `main-SNAPSHOT`. This gets the latest version. However, for your projects we recommend you add a dependency to a specific version:
+Note that in this case the dependency has been added with the tag `main-SNAPSHOT`. We recommend you add a dependency to a specific version:
 
 ```
-implementation 'com.github.approov:approov-service-okhttp:x.y.z'
+implementation 'com.github.approov:approov-service-okhttp:2.7.0'
 ```
-
-You can see the latest in the `README` at [`approov-service-okhttp`](https://github.com/approov/approov-service-okhttp).
 
 Make sure you do a Gradle sync (by selecting `Sync Now` in the banner at the top of the modified `.gradle` file) after making these changes.
 
