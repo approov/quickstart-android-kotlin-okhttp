@@ -46,8 +46,8 @@ Please [read this](https://approov.io/docs/latest/approov-usage-documentation/#t
 ## INITIALIZING APPROOVSERVICE
 In order to use the `ApproovService` you must initialize it when your app is created, usually in the `onCreate` method:
 
-```Java
-import io.approov.service.okhttp.ApproovService;
+```kotlin
+import io.approov.service.okhttp.ApproovService
 
 class YourApp: Application() {
     override fun onCreate() {
@@ -68,7 +68,7 @@ This initializes Approov when the app is first created. A companion object allow
 ## USING APPROOVSERVICE
 You can then make Approov enabled `OkHttp` API calls by using the `OkHttpClient` available from the `ApproovService`:
 
-```Java
+```kotlin
 val client = YourApp.approovService.getOkHttpClient()
 ```
 
@@ -77,14 +77,14 @@ This obtains a cached client to be used for calls that includes an interceptor t
 You must always call this method whenever you want to make a request to ensure that you are using the most up to date client. Failure to do this will mean that the app is not able to dynamically change its pins.
 
 ## CUSTOM OKHTTP BUILDER
-By default, the method gets a default client constructed with `new OkHttpClient()`. However, your existing code may use a customized client with, for instance, different timeouts or other interceptors. For example, if you have existing code:
+By default, the method gets a default `OkHttpClient` client. However, your existing code may use a customized client with, for instance, different timeouts or other interceptors. For example, if you have existing code:
 
-```Java
+```kotlin
 val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build()
 ```
 Pass the modified builder to the `ApproovService` framework as follows:
 
-```Java
+```kotlin
 YourApp.approovService.setOkHttpClientBuilder(OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS))
 ```
 
