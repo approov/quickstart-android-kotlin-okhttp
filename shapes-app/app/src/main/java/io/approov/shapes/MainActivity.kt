@@ -25,25 +25,18 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-
+import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
-
 import java.io.IOException
 
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-
-class MainActivity : Activity() {
-    private var activity: Activity? = null
-    private var statusView: View? = null
-    private var statusImageView: ImageView? = null
-    private var statusTextView: TextView? = null
-    private var connectivityCheckButton: Button? = null
-    private var shapesCheckButton: Button? = null
+class MainActivity: Activity() {
+    private lateinit var activity: Activity
+    private lateinit var statusView: View
+    private lateinit var statusImageView: ImageView
+    private lateinit var statusTextView: TextView
+    private lateinit var helloCheckButton: Button
+    private lateinit var shapesCheckButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,13 +47,13 @@ class MainActivity : Activity() {
         statusView = findViewById(R.id.viewStatus)
         statusImageView = findViewById<View>(R.id.imgStatus) as ImageView
         statusTextView = findViewById(R.id.txtStatus)
-        connectivityCheckButton = findViewById(R.id.btnConnectionCheck)
+        helloCheckButton = findViewById(R.id.btnConnectionCheck)
         shapesCheckButton = findViewById(R.id.btnShapesCheck)
 
-        // handle connection check
-        connectivityCheckButton!!.setOnClickListener {
+        // handle the hello connection check
+        helloCheckButton.setOnClickListener {
             // hide status
-            activity!!.runOnUiThread { statusView!!.visibility = View.INVISIBLE }
+            activity.runOnUiThread { statusView.visibility = View.INVISIBLE }
 
             // make a new Request
             val request = Request.Builder()
@@ -68,15 +61,13 @@ class MainActivity : Activity() {
             val client = OkHttpClient()
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace()
-                    Log.d(TAG, "Connectivity call failed")
+                    Log.d(TAG, "Hello call failed: " + e.message)
                     val imgId = R.drawable.confused
                     val msg = "Request failed: " + e.message
-
-                    activity!!.runOnUiThread {
-                        statusImageView!!.setImageResource(imgId)
-                        statusTextView!!.text = msg
-                        statusView!!.visibility = View.VISIBLE
+                    activity.runOnUiThread {
+                        statusImageView.setImageResource(imgId)
+                        statusTextView.text = msg
+                        statusView.visibility = View.VISIBLE
                     }
                 }
 
@@ -85,46 +76,49 @@ class MainActivity : Activity() {
                     val imgId: Int
                     val msg = "Http status code " + response.code
                     if (response.isSuccessful) {
-                        Log.d(TAG, "Connectivity call successful")
+                        Log.d(TAG, "Hello call successful")
                         imgId = R.drawable.hello
                     } else {
-                        Log.d(TAG, "Connectivity call unsuccessful")
+                        Log.d(TAG, "Hello call unsuccessful")
                         imgId = R.drawable.confused
                     }
 
-                    activity!!.runOnUiThread {
-                        statusImageView!!.setImageResource(imgId)
-                        statusTextView!!.text = msg
-                        statusView!!.visibility = View.VISIBLE
+                    activity.runOnUiThread {
+                        statusImageView.setImageResource(imgId)
+                        statusTextView.text = msg
+                        statusView.visibility = View.VISIBLE
                     }
                 }
             })
         }
 
         // handle getting shapes
-        shapesCheckButton!!.setOnClickListener {
+        shapesCheckButton.setOnClickListener {
             // hide status
-            activity!!.runOnUiThread { statusView!!.visibility = View.INVISIBLE }
+            activity.runOnUiThread { statusView.visibility = View.INVISIBLE }
 
             // *** COMMENT THE LINE BELOW FOR APPROOV ***
             val client = OkHttpClient()
 
+            // *** UNCOMMENT THE LINE BELOW FOR APPROOV USING SECURE PROTECTION ***
+            //ShapesApp.approovService.addSubstitutionHeader("Api-Key", null)
+
             // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
-            //val client = ShapesApp.approovService!!.getOkHttpClient();
+            //val client = ShapesApp.approovService.getOkHttpClient();
 
             // create a new request
             val url = resources.getString(R.string.shapes_url)
-            val request = Request.Builder().url(url).build()
+            val apiKey = resources.getString(R.string.shapes_api_key)
+            val request = Request.Builder().addHeader("Api-Key", apiKey).url(url).build()
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace()
-                    Log.d(TAG, "Shapes call failed")
+                    Log.d(TAG, "Shapes call failed: " + e.message)
                     val imgId = R.drawable.confused
                     val msg = "Request failed: " + e.message
-                    activity!!.runOnUiThread {
-                        statusImageView!!.setImageResource(imgId)
-                        statusTextView!!.text = msg
-                        statusView!!.visibility = View.VISIBLE
+                    activity.runOnUiThread {
+                        statusImageView.setImageResource(imgId)
+                        statusTextView.text = msg
+                        statusView.visibility = View.VISIBLE
                     }
                 }
 
@@ -166,10 +160,10 @@ class MainActivity : Activity() {
 
                     val finalImgId = imgId
                     val finalMsg = msg
-                    activity!!.runOnUiThread {
-                        statusImageView!!.setImageResource(finalImgId)
-                        statusTextView!!.text = finalMsg
-                        statusView!!.visibility = View.VISIBLE
+                    activity.runOnUiThread {
+                        statusImageView.setImageResource(finalImgId)
+                        statusTextView.text = finalMsg
+                        statusView.visibility = View.VISIBLE
                     }
                 }
             })

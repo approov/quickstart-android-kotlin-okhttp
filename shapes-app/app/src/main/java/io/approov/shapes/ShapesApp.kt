@@ -22,8 +22,7 @@ import android.app.Application
 // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
 //import io.approov.service.okhttp.ApproovService
 
-// *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
-class ShapesApp : Application() {
+class ShapesApp: Application() {
     override fun onCreate() {
         super.onCreate()
         // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
@@ -32,6 +31,6 @@ class ShapesApp : Application() {
 
     companion object {
         // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
-        //var approovService: ApproovService? = null
+        //lateinit var approovService: ApproovService
     }
 }
