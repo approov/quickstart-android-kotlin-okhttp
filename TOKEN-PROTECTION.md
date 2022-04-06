@@ -21,7 +21,7 @@ approov registration -add app/build/outputs/apk/debug/app-debug.apk
 ```
 Note, on Windows you need to substitute \ for / in the above command.
 
-> **IMPORTANT:** The registration takes up to 30 seconds to propagate across the Approov Cloud Infrastructure, therefore don't try to run the app again before this time as elapsed. During development of your app you can ensure it [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your device to not have to register the APK each time you modify it.
+> **IMPORTANT:** The registration takes up to 30 seconds to propagate across the Approov Cloud Infrastructure, therefore don't try to run the app again before this time has elapsed. During development of your app you can ensure it [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your device to not have to register the APK each time you modify it.
 
 [Managing Registrations](https://approov.io/docs/latest/approov-usage-documentation/#managing-registrations) provides more details for app registrations, especially for releases to the Play Store. Note that you may also need to apply specific [Android Obfuscation](https://approov.io/docs/latest/approov-usage-documentation/#android-obfuscation) rules for your app when releasing it.
 
@@ -34,7 +34,7 @@ The quickstart also provides the following additional methods:
 ### Changing Approov Token Header Name
 The default header name of `Approov-Token` can be changed as follows:
 
-```Java
+```kotlin
 YourApp.approovService.setApproovHeader("Authorization", "Bearer ")
 ```
 
@@ -43,7 +43,7 @@ The first parameter is the new header name and the second a prefix to be added t
 ### Token Binding
 If want to use [Token Binding](https://approov.io/docs/latest/approov-usage-documentation/#token-binding) then set the header holding the value to be used for binding as follows:
 
-```Java
+```kotlin
 YourApp.approovService.setBindingHeader("Authorization")
 ```
 
@@ -52,8 +52,52 @@ In this case it means that the value of `Authorization` holds the token value to
 ### Prefetching
 If you wish to reduce the latency associated with fetching the first Approov token, then make this call immediately after creating `ApproovService`:
 
-```Java
+```kotlin
 YourApp.approovService.prefetch()
 ```
 
 This initiates the process of fetching an Approov token as a background task, so that a cached token is available immediately when subsequently needed, or at least the fetch time is reduced. Note that there is no point in performing a prefetch if you are using token binding.
+
+### Prechecking
+You may wish to do an early check in your to present a warning to the user if the app is not going to be able to obtain valid Approov tokens because it fails the attestation process. To do this you first need to enable the [Secure Strings](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) feature:
+
+```
+approov secstrings -setEnabled
+```
+
+> Note that this command requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
+
+Here is an example of calling the appropriate method in `ApproovService`:
+
+```kotlin
+import io.approov.service.okhttp.ApproovException
+import io.approov.service.okhttp.ApproovRejectionException
+import io.approov.service.okhttp.ApproovNetworkException
+
+...
+
+try {
+    YourApp.approovService.precheck()
+}
+catch(e: ApproovRejectionException) {
+    // failure due to the attestation being rejected, e.getARC() and e.getRejectionReasons() may be used to present information to the user
+    // (note e.getRejectionReasons() is only available if the feature is enabled, otherwise it is always an empty string)
+}
+catch(e: ApproovNetworkException) {
+    // failure due to a potentially temporary networking issue, allow for a user initiated retry
+}
+catch(e: ApproovException) {
+   // a more permanent error, see e.message
+}
+// app has passed the precheck
+```
+
+> Note you should NEVER use this as the only form of protection in your app, this is simply to provide an early indication of failure to your users as a convenience. You must always also have APIs protected with Approov tokens that are essential to the operation of your app. This is because, although the test itself is heavily secured, it may be possible for an attacker to bypass its result or prevent it being called at all. When the app is dependent Approov protected APIs they can never be accessed without passing the attestation, since it is not possible for an attacker to create a validly signed Approov token.
+
+If you wish to provide more direct feedback with the [Rejection Reasons](https://approov.io/docs/latest/approov-usage-documentation/#rejection-reasons) feature use:
+
+```
+approov policy -setRejectionReasons on
+```
+
+> Note that this command requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
