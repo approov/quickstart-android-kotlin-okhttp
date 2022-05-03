@@ -102,4 +102,4 @@ To actually protect your APIs there are some further steps. Approov provides two
 
 Note that it is possible to use both approaches side-by-side in the same app, in case your app uses a mixture of 1st and 3rd party APIs.
 
-See [REFERENCE](https://github.com/approov/quickstart-android-kotlin-okhttp/blob/master/REFERENCE.md)) for a complete list of all of the `ApproovService` methods.
+See [REFERENCE](https://github.com/approov/quickstart-android-kotlin-okhttp/blob/master/REFERENCE.md) for a complete list of all of the `ApproovService` methods.
