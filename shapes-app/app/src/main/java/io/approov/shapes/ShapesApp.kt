@@ -20,17 +20,12 @@ package io.approov.shapes
 import android.app.Application
 
 // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
-//import io.approov.service.okhttp.ApproovService
+import io.approov.service.okhttp.ApproovService
 
 class ShapesApp: Application() {
     override fun onCreate() {
         super.onCreate()
         // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
-        //approovService = ApproovService(applicationContext, "<enter-your-config-string-here>")
-    }
-
-    companion object {
-        // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
-        //lateinit var approovService: ApproovService
+        ApproovService.initialize(applicationContext, "#richard-test-account#att-richard-test-account.critical.blue#https://dev.approoval.com/token#+kv3bSO3x11jB25QN7/IdP3INz7Wtpg+ScXG3vyLOJU=")
     }
 }

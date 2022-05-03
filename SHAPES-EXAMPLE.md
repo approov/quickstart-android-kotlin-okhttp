@@ -53,7 +53,7 @@ The `approov-service-okhttp` dependency needs to be added as follows to the `app
 Note that in this case the dependency has been added with the tag `main-SNAPSHOT`. We recommend you add a dependency to a specific version:
 
 ```
-implementation 'com.github.approov:approov-service-okhttp:3.0.4'
+implementation 'com.github.approov:approov-service-okhttp:3.0.5'
 ```
 
 Make sure you do a Gradle sync (by selecting `Sync Now` in the banner at the top of the modified `.gradle` file) after making these changes.
@@ -74,13 +74,15 @@ Uncomment the three lines of Approov initialization code in `io/approov/shapes/S
 
 ![Approov Initialization](readme-images/approov-init-code.png)
 
-The Approov SDK needs a configuration string to identify the account associated with the app. It will have been provided in the Approov onboarding email (it will be something like `#123456#K/XPlLtfcwnWkzv99Wj5VmAxo4CrU267J1KlQyoz8Qo=`). Copy this into `io/approov/shapes/ShapesApp.kt:29`, replacing the text `<enter-your-config-string-here>`.
+The Approov SDK needs a configuration string to identify the account associated with the app. It will have been provided in the Approov onboarding email (it will be something like `#123456#K/XPlLtfcwnWkzv99Wj5VmAxo4CrU267J1KlQyoz8Qo=`). Copy this into `io/approov/shapes/ShapesApp.kt`, replacing the text `<enter-your-config-string-here>`.
 
-Next we need to use Approov when we make request for the shapes. Only a single line of code needs to be changed at `io/approov/shapes/MainActivity.kt:108`:
+Next we need to use Approov when we make request for the shapes. Change the code in`io/approov/shapes/MainActivity.kt`:
 
 ![Approov Fetch](readme-images/approov-fetch.png)
 
-> **NOTE:** Don't forget to comment out the previous line, the one using the standard OkHttpClient().
+> **NOTE:** Don't forget to comment out the previous line, the one using the standard `OkHttpClient()`.
+
+Note that it is also necessary to uncomment the `ApproovService` import near the start of the file.
 
 Instead of using a default `OkHttpClient` we instead make the call using a client provided by the `ApproovService`. This automatically fetches an Approov token and adds it as a header to the request. It also pins the connection to the endpoint to ensure that no Man-in-the-Middle can eavesdrop on any communication being made.
 
@@ -145,7 +147,7 @@ approov secstrings -addKey shapes_api_key_placeholder -predefinedValue yXClypapW
 
 > Note that this command also requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
 
-Next we need to inform Approov that it needs to substitute the placeholder value for the real API key on the `Api-Key` header. Only a single line of code needs to be changed at `io/approov/shapes/MainActivity.kt:105`:
+Next we need to inform Approov that it needs to substitute the placeholder value for the real API key on the `Api-Key` header. Only a single line of code needs to be changed at `io/approov/shapes/MainActivity.kt`:
 
 ![Approov Substitute Header](readme-images/approov-subs-header.png)
 

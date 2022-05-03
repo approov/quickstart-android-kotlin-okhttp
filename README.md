@@ -24,7 +24,7 @@ Secondly, add the dependency in your app's `build.gradle`:
 
 ```
 dependencies {
-	 implementation 'com.github.approov:approov-service-okhttp:3.0.4'
+	 implementation 'com.github.approov:approov-service-okhttp:3.0.5'
 }
 ```
 Make sure you do a Gradle sync (by selecting `Sync Now` in the banner at the top of the modified `.gradle` file) after making these changes.
@@ -41,7 +41,7 @@ The following app permissions need to be available in the manifest to use Approo
 
 Note that the minimum SDK version you can use with the Approov package is 21 (Android 5.0). 
 
-Please [read this](https://approov.io/docs/latest/approov-usage-documentation/#targetting-android-11-and-above) section of the reference documentation if targetting Android 11 (API level 30) or above.
+Please [read this](https://approov.io/docs/latest/approov-usage-documentation/#targeting-android-11-and-above) section of the reference documentation if targeting Android 11 (API level 30) or above.
 
 ## INITIALIZING APPROOV SERVICE
 In order to use the `ApproovService` you must initialize it when your app is created, usually in the `onCreate` method:
@@ -52,18 +52,12 @@ import io.approov.service.okhttp.ApproovService
 class YourApp: Application() {
     override fun onCreate() {
         super.onCreate()
-        approovService = ApproovService(applicationContext, "<enter-your-config-string-here>")
-    }
-
-    companion object {
-        lateinit var approovService: ApproovService
+        ApproovService.initialize(applicationContext, "<enter-your-config-string-here>")
     }
 }
 ```
 
 The `<enter-your-config-string-here>` is a custom string that configures your Approov account access. This will have been provided in your Approov onboarding email.
-
-This initializes Approov when the app is first created. A companion object allows other parts of the app to access the singleton Approov instance. All calls to `ApproovService` and the SDK itself are thread safe.
 
 It is possible to pass an empty string to indicate that no initialization is required. Only do this if you are also using a different Approov quickstart in your app (which will use the same underlying Approov SDK) and this will have been initialized first.
 
@@ -71,7 +65,7 @@ It is possible to pass an empty string to indicate that no initialization is req
 You can then make Approov enabled `OkHttp` API calls by using the `OkHttpClient` available from the `ApproovService`:
 
 ```kotlin
-val client = YourApp.approovService.getOkHttpClient()
+val client = ApproovService.getOkHttpClient()
 ```
 
 This obtains a cached client to be used for calls that includes an interceptor that protects channel integrity (with either pinning or managed trust roots). The interceptor may also add `Approov-Token` or substitute app secret values, depending upon your integration choices. You should thus use this client for all API calls you may wish to protect.
@@ -89,10 +83,10 @@ val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build()
 Pass the modified builder to the `ApproovService` framework as follows:
 
 ```kotlin
-YourApp.approovService.setOkHttpClientBuilder(OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS))
+ApproovService.setOkHttpClientBuilder(OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS))
 ```
 
-This call only needs to be made once. Subsequent calls to `YourApp.approovService.getOkHttpClient()` will then always a `OkHttpClient` with the builder values included.
+This call only needs to be made once. Subsequent calls to `ApproovService.getOkHttpClient()` will then always a `OkHttpClient` with the builder values included.
 
 ## CHECKING IT WORKS
 Initially you won't have set which API domains to protect, so the interceptor will not add anything. It will have called Approov though and made contact with the Approov cloud service. You will see logging from Approov saying `UNKNOWN_URL`.
@@ -107,3 +101,5 @@ To actually protect your APIs there are some further steps. Approov provides two
 * [SECRET PROTECTION](https://github.com/approov/quickstart-android-kotlin-okhttp/blob/master/SECRET-PROTECTION.md): If you do not control the backend API(s) being protected, and are therefore unable to modify it to check Approov tokens, you can use this approach instead. It allows app secrets, and API keys, to be protected so that they no longer need to be included in the built code and are only made available to passing apps at runtime.
 
 Note that it is possible to use both approaches side-by-side in the same app, in case your app uses a mixture of 1st and 3rd party APIs.
+
+See [REFERENCE](https://github.com/approov/quickstart-android-kotlin-okhttp/blob/master/REFERENCE.md)) for a complete list of all of the `ApproovService` methods.

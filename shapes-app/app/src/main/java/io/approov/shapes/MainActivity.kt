@@ -30,6 +30,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 
+// *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
+import io.approov.service.okhttp.ApproovService
+
 class MainActivity: Activity() {
     private lateinit var activity: Activity
     private lateinit var statusView: View
@@ -98,13 +101,13 @@ class MainActivity: Activity() {
             activity.runOnUiThread { statusView.visibility = View.INVISIBLE }
 
             // *** COMMENT THE LINE BELOW FOR APPROOV ***
-            val client = OkHttpClient()
+            //val client = OkHttpClient()
 
             // *** UNCOMMENT THE LINE BELOW FOR APPROOV USING SECURE PROTECTION ***
-            //ShapesApp.approovService.addSubstitutionHeader("Api-Key", null)
+            ApproovService.addSubstitutionHeader("Api-Key", null)
 
             // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
-            //val client = ShapesApp.approovService.getOkHttpClient();
+            val client = ApproovService.getOkHttpClient();
 
             // create a new request
             val url = resources.getString(R.string.shapes_url)
