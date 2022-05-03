@@ -53,7 +53,7 @@ You can add up to 16 different secret values to be substituted in this way.
 If the secret value is provided on the header `<secret-header>` then it is necessary to notify the `ApproovService` that the header is subject to substitution. You do this by making the call once, after initialization:
 
 ```kotlin
-ApproovService.addSubstitutionHeader("<secret-header>", null);
+ApproovService.addSubstitutionHeader("<secret-header>", null)
 ```
 
 With this in place the Approov interceptor should replace the `<secret-placeholder>` with the `<secret-value>` as required when the app passes attestation. Since the mapping lookup is performed on the placeholder value you have the flexibility of providing different secrets on different API calls, even if they passed with the same header name.
@@ -63,7 +63,7 @@ Since earlier released versions of the app may have already leaked the `<secret-
 If the secret value is provided as a parameter in a URL query string with the name `<secret-param>` then it is necessary to notify the `ApproovService` that the query parameter is subject to substitution. You do this by making the call once, after initialization:
 
 ```kotlin
-ApproovService.addSubstitutionQueryParam("<secret-param>");
+ApproovService.addSubstitutionQueryParam("<secret-param>")
 ```
 
 After this the Approov interceptor should transform any instance of a URL such as `https://mydomain.com/endpoint?<secret-param>=<secret-placeholder>` into `https://mydomain.com/endpoint?<secret-param>=<secret-value>`, if the app passes attestation and there is a secure string with the name `<secret-placeholder>`.
@@ -103,7 +103,7 @@ See [Getting Started With Approov](https://approov.io/docs/latest/approov-usage-
 In some cases the value to be substituted on a header may be prefixed by some fixed string. A common case is the presence of `Bearer` included in an authorization header to indicate the use of a bearer token. In this case you can specify a prefix as follows:
 
 ```kotlin
-ApproovService.addSubstitutionHeader("Authorization", "Bearer ");
+ApproovService.addSubstitutionHeader("Authorization", "Bearer ")
 ```
 
 This causes the `Bearer` prefix to be stripped before doing the lookup for the substitution, and the `Bearer` prefix added to the actual secret value as part of the substitution.
