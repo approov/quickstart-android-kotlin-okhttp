@@ -1,5 +1,5 @@
 # Reference
-This provides a reference for all of the static methods defined on `ApproovService`. These are available if you make it available with:
+This provides a reference for all of the static methods defined on `ApproovService`. These are available if you import:
 
 ```kotlin
 import io.approov.service.okhttp.ApproovService
