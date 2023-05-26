@@ -85,7 +85,7 @@ import io.approov.service.okhttp.ApproovNetworkException
 
 var secret: String?
 try {
-    secret = ApproovService.fetchSecureString("<your-secret-name>", null)
+    secret = ApproovService.fetchSecureString("your-secret-name", null)
 }
 catch(e: ApproovRejectionException) {
     // failure due to the attestation being rejected, e.getARC() and e.getRejectionReasons() may be used to
