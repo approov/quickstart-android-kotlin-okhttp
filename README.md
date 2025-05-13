@@ -28,7 +28,7 @@ The following app permissions need to be available in the manifest to use Approo
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-Note that the minimum SDK version you can use with the Approov package is 21 (Android 5.0). 
+Note that the minimum SDK version you can use with the Approov package is 23 (Android 6.0). 
 
 Please [read this](https://approov.io/docs/latest/approov-usage-documentation/#targeting-android-11-and-above) section of the reference documentation if targeting Android 11 (API level 30) or above.
 
