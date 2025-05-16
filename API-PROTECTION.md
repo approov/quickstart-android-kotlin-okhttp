@@ -13,7 +13,7 @@ Approov tokens will then be added automatically to any requests to that domain (
 
 Note that this will use [Managed Trust Roots](https://approov.io/docs/latest/approov-usage-documentation/#managed-trust-roots) to ensure that no Man-in-the-Middle attacks on your app's communication are possible.
 
-> **NOTE:** By default a symmetric account key is used to sign the Approov token (HS256 algorithm), so that all API domains will share the same signing secret. Alternatively, it is possible to use a [keyset key](https://approov.io/docs/latest/approov-usage-documentation/#managing-key-sets) which may differ for each API domain and for which a wide range of different signing algorithms and key types are available. This requires you to first [add a new key](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-new-key), and then specify it when [adding each API domain](https://approov.io/docs/latest/approov-usage-documentation/#keyset-key-api-addition). Note that this impact how you verify the token on your API backend.
+> **NOTE:** By default a symmetric account key is used to sign the Approov token (HS256 algorithm), so that all API domains will share the same signing secret. Alternatively, it is possible to use a [keyset key](https://approov.io/docs/latest/approov-usage-documentation/#managing-key-sets) which may differ for each API domain and for which a wide range of different signing algorithms and key types are available. This requires you to first [add a new key](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-new-key), and then specify it when [adding each API domain](https://approov.io/docs/latest/approov-usage-documentation/#keyset-key-api-addition). Note that this will impact how you verify the token on your API backend.
 
 ## ADD YOUR SIGNING CERTIFICATE TO APPROOV
 In order for Approov to recognize the app as being valid, the local certificate used to sign the app needs to be added to Approov. The following assumes it is in PKCS12 format:
@@ -25,6 +25,36 @@ approov appsigncert -add ~/.android/debug.keystore -storePassword android -autoR
 This ensures that any app signed with the certificate used on your development machine will be recognized by Approov.
 
 See [Android App Signing Certificates](https://approov.io/docs/latest/approov-usage-documentation/#android-app-signing-certificates) if your keystore format is not recognized or if you have any issues adding the certificate. This also provides information about adding certificates for when releasing to the Play Store. Note also that you need to apply specific [Android Obfuscation](https://approov.io/docs/latest/approov-usage-documentation/#android-obfuscation) rules when creating an app release.
+
+## MESSAGE SIGNING
+We provide [installation message signing](https://approov.io/docs/latest/approov-usage-documentation/#installation-message-signing) as an advanced option for situations where an additional level of integrity assurance is required. You should use this option if you would like to ensure strict message integrity between the client app and the backend API. The key pair for message signing is generated automatically when the SDK is first initialized. The public key is transmitted to the Approov servers to be included in Approov tokens in the `ipk` claim. The private key never leaves the device and is held in secure hardware (e.g. TEE/Secure Enclave) to prevent the key material from being stolen.
+
+### Enabling Installation Message Signing
+
+Installation message signing can be enabled by executing the following command:
+
+```shell
+approov policy -setInstallPubKey on
+```
+
+This causes the public key to be included in any Approov tokens in the `ipk` claim, the presence of which then indicates to the backend that it should expect a valid installation message signature and that this should be verified.
+
+### Adding the Message Signature Automatically
+
+If you are using the `ApproovService` networking stack, then Approov can automatically generate and add the message signature. You should use this method whenever possible. You enable this by making the following call once, after initialization:
+
+```kotlin
+ApproovService.setApproovInterceptorExtensions(
+    ApproovDefaultMessageSigning().setDefaultFactory(
+        ApproovDefaultMessageSigning.generateDefaultSignatureParametersFactory()
+    )
+)
+```
+
+With this interceptor extension in place the Approov networking interceptor computes the request message signature and 
+adds it to the request as required when the app passes attestation.
+
+You can see a [worked example](https://github.com/approov/quickstart-android-java-okhttp/blob/master/SHAPES-EXAMPLE.md#shapes-app-with-installation-message-signing) for the Shapes app.
 
 ## FURTHER OPTIONS
 See [Exploring Other Approov Features](https://approov.io/docs/latest/approov-usage-documentation/#exploring-other-approov-features) for information about additional Approov features you may wish to try.
@@ -70,8 +100,9 @@ You may wish to do an early check in your app to present a warning to the user i
 
 ```kotlin
 import io.approov.service.okhttp.ApproovException
-import io.approov.service.okhttp.ApproovRejectionException
 import io.approov.service.okhttp.ApproovNetworkException
+import io.approov.service.okhttp.ApproovRejectionException
+
 
 ...
 

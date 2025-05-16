@@ -55,8 +55,8 @@ In this case it is possible to make an explicit call at runtime to obtain the se
 
 ```kotlin
 import io.approov.service.okhttp.ApproovException
-import io.approov.service.okhttp.ApproovRejectionException
 import io.approov.service.okhttp.ApproovNetworkException
+import io.approov.service.okhttp.ApproovRejectionException
 
 ...
 
@@ -147,8 +147,8 @@ You may wish to do an early check in your app to present a warning to the user i
 
 ```kotlin
 import io.approov.service.okhttp.ApproovException
-import io.approov.service.okhttp.ApproovRejectionException
 import io.approov.service.okhttp.ApproovNetworkException
+import io.approov.service.okhttp.ApproovRejectionException
 
 ...
 
