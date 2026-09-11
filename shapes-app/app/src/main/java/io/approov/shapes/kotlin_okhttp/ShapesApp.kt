@@ -18,24 +18,26 @@
 package io.approov.shapes.kotlin_okhttp
 
 import android.app.Application
+import android.util.Log
 
 // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
 //import io.approov.service.okhttp.ApproovService
 
-// *** UNCOMMENT THE LINE BELOW FOR APPROOV WITH INSTALLATION MESSAGE SIGNING ***
-//import io.approov.service.okhttp.ApproovDefaultMessageSigning;
-
 class ShapesApp: Application() {
+    companion object {
+        private const val TAG = "ShapesApp"
+    }
+
     override fun onCreate() {
         super.onCreate()
-        // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
-        //ApproovService.initialize(applicationContext, "<enter-your-config-string-here>")
-
-        // *** UNCOMMENT THE LINES BELOW FOR APPROOV WITH INSTALLATION MESSAGE SIGNING ***
-        //ApproovService.setApproovInterceptorExtensions(
-        //    ApproovDefaultMessageSigning().setDefaultFactory(
-        //        ApproovDefaultMessageSigning.generateDefaultSignatureParametersFactory()
-        //    )
-        //)
+        // *** UNCOMMENT THE LINES BELOW FOR APPROOV ***
+        //try {
+        //    // your Approov account ID, from your onboarding email or "approov sdk -getConfigString"
+        //    ApproovService.initialize(applicationContext, "<your-approov-account-id>")
+        //} catch (e: Exception) {
+        //    // the value passed was not a valid account ID; run without Approov rather than not at all
+        //    Log.e(TAG, "Approov account ID rejected; starting in bypass mode", e)
+        //    ApproovService.initialize(applicationContext, "")
+        //}
     }
 }
