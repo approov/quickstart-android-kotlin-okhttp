@@ -9,7 +9,7 @@ To follow this guide you should have received an onboarding email for a trial or
 ## ADDING APPROOV SERVICE DEPENDENCY
 The Approov integration is available via [`mavenCentral`](https://mvnrepository.com/repos/central). This allows inclusion into the project by simply specifying a dependency in the `gradle` files for the app.
 
-The `mavenCentral()` repository is already present in the gradle.build file so the only import you need to make is the actual service layer itself:
+The `mavenCentral()` repository is already present in the `settings.gradle` file so the only import you need to make is the actual service layer itself:
 
 ```
 implementation("io.approov:service.okhttp:3.5.8")
